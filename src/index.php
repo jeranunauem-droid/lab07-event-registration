@@ -1,184 +1,85 @@
 <?php
-function readSecret($secretName) {
-    $path = "/run/secrets/" . $secretName;
-    return file_exists($path) ? trim(file_get_contents($path)) : null;
-}
-
-$host = 'db-server';
+$host = 'db-server'; 
+$db   = 'event_db';
 $user = 'app_user';
-$pass = readSecret('db_user_pass');
-$db   = 'my_app_db';
+$secret_path = '/run/secrets/db_user_pass';
 
-$conn = new mysqli($host, $user, $pass, $db);
-
-if ($conn->connect_error) {
-    die("<div class='alert alert-danger'>❌ Connection failed: " . $conn->connect_error . "</div>");
+$db_connected = false;
+if (file_exists($secret_path)) {
+    $pass = trim(file_get_contents($secret_path));
+    $conn = @new mysqli($host, $user, $pass, $db);
+    if (!$conn->connect_error) {
+        $db_connected = true;
+        $conn->set_charset("utf8mb4");
+        $result = $conn->query("SELECT * FROM students ORDER BY id ASC");
+    }
 }
-
-// เปลี่ยนเป็น ORDER BY id ASC (น้อยไปมาก)
-$result = $conn->query("SELECT * FROM students ORDER BY id ASC");
 ?>
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Student Dashboard</title>
-    <link href="https://cdn.jsdelivr.net" rel="stylesheet">
-    <link href="https://fonts.googleapis.com" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net">
-    
+    <title>Assignment 07: Infrastructure</title>
     <style>
-        :root {
-            --glass-bg: rgba(255, 255, 255, 0.9);
-            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-        }
-        
-        body { 
-            font-family: 'Plus Jakarta Sans', 'Sarabun', sans-serif; 
-            background: #f3f4f6;
-            background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0, transparent 50%), 
-                              radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.15) 0, transparent 50%);
-            min-height: 100vh;
-            padding-bottom: 50px;
-        }
-
-        .main-card {
-            border: none;
-            border-radius: 20px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            overflow: hidden;
-        }
-
-        .header-section {
-            background: var(--primary-gradient);
-            padding: 40px 20px;
-            color: white;
-            text-align: center;
-            margin-bottom: -20px;
-        }
-
-        .table {
-            --bs-table-bg: transparent;
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background: #f8fafc;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-            color: #64748b;
-            padding: 15px 20px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .table tbody td {
-            padding: 18px 20px;
-            border-bottom: 1px solid #f1f5f9;
-            color: #334155;
-            vertical-align: middle;
-        }
-
-        .badge-custom {
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.75rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .bg-submitted { background: #dcfce7; color: #166534; }
-        .bg-progress { background: #fef9c3; color: #854d0e; }
-        .bg-pending { background: #f1f5f9; color: #475569; }
-
-        .time-display {
-            font-size: 0.85rem;
-            color: #94a3b8;
-        }
-        
-        .user-code {
-            background: #f1f5f9;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-family: monospace;
-            color: #6366f1;
-        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f6; margin: 0; display: flex; flex-direction: column; align-items: center; }
+        .header-banner { background-color: #9b59b6; color: white; width: 100%; padding: 40px 0; text-align: center; }
+        .container { width: 95%; max-width: 1100px; background: white; margin-top: -30px; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th { color: #888; font-size: 12px; text-transform: uppercase; padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; }
+        .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .submitted { background-color: #d4edda; color: #155724; }
+        .in-progress { background-color: #fff3cd; color: #856404; }
+        .username-tag { color: #9b59b6; background: #f3e5f5; padding: 3px 8px; border-radius: 5px; font-size: 12px; }
     </style>
 </head>
 <body>
-
-<div class="header-section">
-    <h2 class="fw-bold">Assignment 07: Infrastructure</h2>
-    <p class="opacity-75">Containerized Application with Docker Configs & Secrets</p>
-</div>
-
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-11">
-            <div class="main-card border-0 card">
-                <div class="p-4 d-flex justify-content-between align-items-center bg-white border-bottom">
-                    <div>
-                        <h5 class="mb-0 fw-bold">Student Database</h5>
-                        <small class="text-muted small">เรียงลำดับตาม ID (น้อยไปมาก)</small>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <span class="badge bg-dark rounded-pill"><i class="bi bi-shield-lock me-1"></i> Secrets Active</span>
-                    </div>
-                </div>
-                
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th># ID</th>
-                                <th>รหัสนักศึกษา</th>
-                                <th>ชื่อ-นามสกุล</th>
-                                <th>Username</th>
-                                <th>อีเมล</th>
-                                <th>สถานะงาน</th>
-                                <th><i class="bi bi-clock me-1"></i> วันที่และเวลาที่บันทึก</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while($row = $result->fetch_assoc()): 
-                                $statusSlug = strtolower(str_replace(' ', '', $row['status']));
-                                // จัดรูปแบบวันที่ไทย
-                                $date = date("d/m/Y H:i:s", strtotime($row['submitted_at']));
-                            ?>
-                            <tr>
-                                <td class="fw-bold text-primary"><?= sprintf("%02d", $row['id']) ?></td>
-                                <td><span class="fw-semibold text-dark"><?= $row['student_id'] ?></span></td>
-                                <td><?= $row['full_name'] ?></td>
-                                <td><span class="user-code">@<?= $row['username'] ?></span></td>
-                                <td><?= $row['email'] ?></td>
-                                <td>
-                                    <span class="badge-custom bg-<?= $statusSlug ?>">
-                                        <i class="bi bi-circle-fill" style="font-size: 6px;"></i>
-                                        <?= $row['status'] ?>
-                                    </span>
-                                </td>
-                                <td class="time-display">
-                                    <?= $date ?> น.
-                                </td>
-                            </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="card-footer bg-white border-0 p-4 text-center">
-                    <small class="text-muted">Database Engine: MariaDB 10.6 | Environment: Docker Compose v2</small>
-                </div>
-            </div>
+    <div class="header-banner">
+        <h1>Assignment 07: Infrastructure</h1>
+        <p>Containerized Application with Docker Configs & Secrets</p>
+    </div>
+    <div class="container">
+        <h3>Student Database</h3>
+        <p>เรียงลำดับตาม ID (น้อยไปมาก)<br><strong>Secrets Active</strong></p>
+        <table>
+            <thead>
+                <tr>
+                    <th># ID</th>
+                    <th>รหัสนักศึกษา</th>
+                    <th>ชื่อ-นามสกุล</th>
+                    <th>USERNAME</th>
+                    <th>อีเมล</th>
+                    <th>สถานะงาน</th>
+                    <th>วันที่และเวลาที่บันทึก</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if ($db_connected && $result->num_rows > 0) {
+                    while($row = $result->fetch_assoc()) {
+                        // เช็คว่าค่า status เป็น 'Submitted' หรือไม่ (ระวังตัวเล็กตัวใหญ่)
+                        $status_class = (strtolower($row['status']) == 'submitted') ? 'submitted' : 'in-progress';
+                        
+                        echo "<tr>";
+                        echo "<td>" . sprintf("%02d", $row['id']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['student_id']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['full_name']) . "</td>";
+                        echo "<td><span class='username-tag'>@" . htmlspecialchars($row['username']) . "</span></td>";
+                        echo "<td>" . htmlspecialchars($row['email']) . "</td>";
+                        echo "<td><span class='status-badge $status_class'>" . htmlspecialchars($row['status']) . "</span></td>";
+                        // ต้องสะกดว่า submitted_at (มีตัว d) ตามใน phpMyAdmin ของคุณ
+                        echo "<td>" . htmlspecialchars($row['submitted_at'] ?? '-') . " น.</td>";
+                        echo "</tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='7' style='text-align:center;'>⚠️ ไม่พบข้อมูลในตาราง students</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+        <div style="margin-top:20px; font-size:12px; color:#999;">
+            *Database Engine: MySQL 8.0 | Environment: Docker Compose v2 | Developer: เจรัญญ์ (1660701226)
         </div>
     </div>
-</div>
-
 </body>
 </html>
-<?php $conn->close(); ?>
