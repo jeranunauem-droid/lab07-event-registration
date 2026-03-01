@@ -54,17 +54,17 @@ assignment-07/
 *   **Configs:** ในโฟลเดอร์ nginx ให้ไฟล์ `my-nginx.conf` และให้เรียกใช้ไฟล์ตั้งค่า Nginx ผ่าน configs ที่พาธ `/etc/nginx/conf.d/default.conf`
 
 #### 📝 **ตัวแปรสภาพแวดล้อม (.env)**
-*   สร้างไฟล์ `.env` เก็บค่าตัวแปร: `MY_USERNAME`, `HTTP_PORT`, `PMA_PORT`, `DB_NAME` และนำไปใช้ใน `compose.yaml` ทั้งหมด
+*   สร้างไฟล์ `.env` เก็บค่าตัวแปร: `MY_jeranun`, `HTTP_PORT`, `PMA_PORT`, `DB_NAME` และนำไปใช้ใน `compose.yaml` ทั้งหมด
 
 ---
 
 ### 3. การจำลองข้อมูลระบุตัวตน (Data Seeding)
 หลังจากการรันระบบสำเร็จ ให้นักศึกษาเข้าใช้งาน **phpMyAdmin** ด้วยบัญชีผู้ใช้ที่ตั้งขึ้น และใช้เนื้อหาไฟล์ชื่อ seed-data.sql เพื่อสร้างตารางชื่อ `students` ในฐานข้อมูลที่กำหนดไว้ พร้อมเพิ่มข้อมูลดังนี้:
-1.  **Student ID:** รหัสนักศึกษา
-2.  **Full Name:** ชื่อ-นามสกุล ของนักศึกษา
-3.  **Username:** ชื่อ username ของนักศึกษา
-4.  **Email:** ชื่อบัญชีผู้ใช้ที่ใช้ในโปรเจกต์
-5.  **Status:** ข้อมูลจำลองอื่นๆ (สถานะการส่งงาน)
+1.  **Student ID:1660701226** รหัสนักศึกษา
+2.  **Full Name:Jeranun-Auemta** ชื่อ-นามสกุล ของนักศึกษา
+3.  **Username:jeranun_auemta** ชื่อ username ของนักศึกษา
+4.  **Email:jeranun.auem@bumail.net** ชื่อบัญชีผู้ใช้ที่ใช้ในโปรเจกต์
+5.  **Status:Submitted** ข้อมูลจำลองอื่นๆ (สถานะการส่งงาน)
 
 ```sql
 -- 1. สร้างตารางสำหรับเก็บข้อมูลนักศึกษา
@@ -84,7 +84,7 @@ VALUES
 ('6601000100', 'นายสมชาย ใจดี', 'somchai-dev', 'somchai.j@mail.com', 'Submitted'),
 ('6601000200', 'นางสาวสมหญิง รักเรียน', 'somying-it', 'somying.r@mail.com', 'In Progress'),
 -- ใส่ข้อมูลจริงของคุณที่บรรทัดนี้ --
-('รหัสนักศึกษา', 'ชื่อ-นามสกุล ของคุณ', 'username-ของคุณ', 'อีเมล-ของคุณ', 'Submitted');
+('1660701226', 'นางสาวจีรนัน เอี่ยมท่า', 'jeranun_auemta', 'jeranun.auem@bumail.net', 'Submitted');
 
 
 ```
@@ -112,13 +112,13 @@ VALUES
 **หมายเหตุ:**  ส่วนนี้จะต้องใช้ในการทำข้อสอบด้วย
 * นักศึกษาต้องใช้ git clone [url]
 * สร้าง repository ระบุว่าเป็น LAB07-Assignment07-[username ของนักศึกษา] เช่น LAB07-Assignment07-ekachai.kany
-* กำหนด git config --global user.name "username"
-* กำหนด git config --global user.email "email"
+* กำหนด git config --global jeranun.name "jeranun"
+* กำหนด git config --global jeranun.email "email"
 * กำหนด git init
 * กำหนด git add .
 * กำหนด git commit -m "first commit"
 * กำหนด git branch -M main
-* กำหนด git remote add origin [your git repo url]
+* กำหนด git remote add origin jeranun git repo url
 * กำหนด git push -u origin main
 
 ---

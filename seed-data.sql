@@ -15,4 +15,4 @@ VALUES
 ('6601000100', 'นายสมชาย ใจดี', 'somchai-dev', 'somchai.j@mail.com', 'Submitted'),
 ('6601000200', 'นางสาวสมหญิง รักเรียน', 'somying-it', 'somying.r@mail.com', 'In Progress'),
 -- ใส่ข้อมูลจริงของคุณที่บรรทัดนี้ --
-('รหัสนักศึกษา', 'ชื่อ-นามสกุล ของคุณ', 'username-ของคุณ', 'อีเมล-ของคุณ', 'Submitted');
+('1660701226', 'นางสาวจีรนัน เอี่ยมท่า', 'jeranun_auemta', 'jeranun.auem@bumail.net', 'Submitted');
