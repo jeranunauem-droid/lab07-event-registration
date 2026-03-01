@@ -84,7 +84,7 @@ VALUES
 ('6601000100', 'นายสมชาย ใจดี', 'somchai-dev', 'somchai.j@mail.com', 'Submitted'),
 ('6601000200', 'นางสาวสมหญิง รักเรียน', 'somying-it', 'somying.r@mail.com', 'In Progress'),
 -- ใส่ข้อมูลจริงของคุณที่บรรทัดนี้ --
-('1660701226', 'นางสาวจีรนัน เอี่ยมท่า', 'jeranun_auemta', 'jeranun.auem@bumail.net', 'Submitted');
+('1660701226', 'นางสาวจีรนัน เอี่ยมท่า', 'jeranun_it', 'jeranun.auem@bumail.net', 'Submitted');
 
 
 ```
@@ -111,7 +111,7 @@ VALUES
 
 **หมายเหตุ:**  ส่วนนี้จะต้องใช้ในการทำข้อสอบด้วย
 * นักศึกษาต้องใช้ git clone [url]
-* สร้าง repository ระบุว่าเป็น LAB07-Assignment07-[username ของนักศึกษา] เช่น LAB07-Assignment07-ekachai.kany
+* สร้าง repository ระบุว่าเป็น LAB07-Assignment07-jeranun.auem 
 * กำหนด git config --global jeranun.name "jeranun"
 * กำหนด git config --global jeranun.email "email"
 * กำหนด git init

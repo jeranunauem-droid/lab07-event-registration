@@ -2,8 +2,8 @@ name: assignment-07
 
 services:
   db-server:
-    image: mysql:8.0
-    container_name: ${MY_jeranun}-db
+    image: mysql:8.0           
+    container_name: jeranun-db 
     restart: always
     environment:
       MYSQL_DATABASE: ${DB_NAME}
@@ -20,7 +20,7 @@ services:
 
   backend-php:
     image: bitnami/php-fpm:latest
-    container_name: ${MY_jeranun}-php
+    container_name: jeranun-php 
     restart: always
     volumes:
       - ./app:/var/www/html
@@ -31,10 +31,10 @@ services:
 
   web-proxy:
     image: nginx:latest
-    container_name: ${MY_jeranun}-web
+    container_name: jeranun-web 
     restart: always
     ports:
-      - "${HTTP_PORT}:80"
+      - "8080:80"               
     volumes:
       - ./app:/var/www/html
     configs:
@@ -48,13 +48,13 @@ services:
 
   db-management:
     image: phpmyadmin:latest
-    container_name: ${MY_jeranun}-pma
+    container_name: jeranun-pma 
     restart: always
     environment:
       PMA_HOST: db-server
       PMA_PASSWORD_FILE: /run/secrets/db_root_pass
     ports:
-      - "${PMA_PORT}:80"
+      - "8081:80"               
     networks:
       - frontend-zone
       - backend-zone
