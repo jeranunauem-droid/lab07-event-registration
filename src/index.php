@@ -1,7 +1,8 @@
 <?php
+header('Content-Type: text/html; charset=UTF-8');
 $host = 'db-server'; 
-$db   = 'event_db';
-$user = 'app_user';
+$db   = 'event_registration';
+$user = 'jeranun';
 $secret_path = '/run/secrets/db_user_pass';
 
 $db_connected = false;
@@ -11,7 +12,9 @@ if (file_exists($secret_path)) {
     if (!$conn->connect_error) {
         $db_connected = true;
         $conn->set_charset("utf8mb4");
-        $result = $conn->query("SELECT * FROM students ORDER BY id ASC");
+        @$conn->query("SET NAMES 'utf8mb4'");
+        mysqli_report(MYSQLI_REPORT_OFF);
+        $result = @$conn->query("SELECT * FROM students ORDER BY id ASC");
     }
 }
 ?>
@@ -55,7 +58,7 @@ if (file_exists($secret_path)) {
             </thead>
             <tbody>
                 <?php
-                if ($db_connected && $result->num_rows > 0) {
+                if ($db_connected && $result && $result->num_rows > 0) {
                     while($row = $result->fetch_assoc()) {
                         // เช็คว่าค่า status เป็น 'Submitted' หรือไม่ (ระวังตัวเล็กตัวใหญ่)
                         $status_class = (strtolower($row['status']) == 'submitted') ? 'submitted' : 'in-progress';

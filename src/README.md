@@ -20,7 +20,7 @@ assignment-07/
 |   ├── .db_pass_pass.txt # ไฟล์ลับเก็บรหัสผ่าน User MySQL (Docker Secrets)
 ├── seed-data.sql         # ไฟล์ SQL สำหรับ Import ข้อมูลนักศึกษาลงใน phpMyAdmin
 ├── app/                  # โฟลเดอร์สำหรับทำ Bind Mount กับ Backend
-│   └── index.php         # ไฟล์ทดสอบการทำงานของ PHP
+│   └── index.php         # ไฟล์ทดสอบการทำงานของ PHPm
 └── README.md             # คู่มืออธิบายการติดตั้งและภาพผลลัพธ์
 ```
 
